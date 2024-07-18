@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int    @id @default(autoincrement())
+  email          String @unique
+  hashedPassword String @map("hashed_password")
+  firstName      String @map("first_name")
+  lastName       String @map("last_name")
+
+  phoneNumber String? @map("phone_number")
+  location    String?
+
+  role UserRoles @default(USER)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  applications Application[]
+}
+
+model Job {
+  id              Int     @id @default(autoincrement())
+  title           String
+  description     String  @db.Text
+  companyName     String  @map("company_name")
+  companyLocation String? @map("company_location")
+  type            JobType
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  applications Application[]
+}
+
+model Application {
+  id Int @id @default(autoincrement())
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  jobId Int @map("job_id")
+  job   Job @relation(fields: [jobId], references: [id])
+
+  yearsOfExperience Float   @map("years_of_experience")
+  noticePeriod      Int?    @map("notice_period")
+  expectedSalary    Float   @map("expected_salary")
+  briefIntro        String? @map("brief_intro") @db.Text
+
+  status ApplicationStatus @default(PENDING)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, jobId])
+}
+
+enum ApplicationStatus {
+  PENDING
+  REJECTED
+  ACCEPTED
+}
+
+enum JobType {
+  ONSITE
+  REMOTE
+  HYBRID
+}
+
+enum UserRoles {
+  ADMIN
+  USER
+}
