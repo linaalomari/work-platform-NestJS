@@ -7,11 +7,24 @@ services:
     restart: always
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_DATABASE: jobs-platform
+      MYSQL_DATABASE: nxgen
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
 
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - 'grafana_storage:/var/lib/grafana'
+    depends_on:
+      -  mysql
+
 volumes:
   mysql_data:
+  grafana_storage: {}
+
