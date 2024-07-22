@@ -7,11 +7,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import JwtAuthenticationGuard from 'src/auth/guards/jwt.guard';
 import { AdminJobsService } from './admin-jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-admin-job.dto';
 
+@UseGuards(JwtAuthenticationGuard)
 @Controller('admin/jobs')
 export class AdminJobsController {
   constructor(private readonly adminJobsService: AdminJobsService) {}
@@ -32,12 +35,15 @@ export class AdminJobsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminJobDto: UpdateJobDto) {
-    return this.adminJobsService.update(+id, updateAdminJobDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateAdminJobDto: UpdateJobDto,
+  ) {
+    return this.adminJobsService.update(id, updateAdminJobDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminJobsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.adminJobsService.remove(id);
   }
 }

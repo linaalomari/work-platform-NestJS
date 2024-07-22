@@ -1,8 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { hash } from 'bcrypt';
-import { CreateUserDto } from '../users-repository/dto/create-user.dto';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
+import { LocalAuthenticationGuard } from './guards/local.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -10,13 +10,15 @@ export class AuthController {
 
   @Post('register')
   async create(@Body() registerDto: RegisterDto) {
-    const hashedPassword = await hash(registerDto.password, 10);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(registerDto.password, salt);
     delete registerDto.password;
     return this.authService.register({ ...registerDto, hashedPassword });
   }
 
+  @UseGuards(LocalAuthenticationGuard)
   @Post('login')
-  login(@Body() createAuthDto: CreateUserDto) {
-    return this.authService.register(createAuthDto);
+  async login(@Request() req) {
+    return this.authService.login(req.user);
   }
 }

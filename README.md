@@ -1,73 +1,200 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Job Application Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This project is a backend for managing job listings and applications, built with Next.js and integrated with Grafana for monitoring application data. It supports two types of users: admins and general users. Admins can create, update, edit the status of job listings, and view the list of applications. Users can apply for jobs and view job listings.
 
-## Description
+## Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- _Admin Functions:_
 
-## Installation
+  - Create job listings
+  - Update job listings
+  - Edit the status of job listings
+  - View a list of all job listings
+  - View applications for a specific job
 
-```bash
-$ npm install
-```
+- _User Functions:_
 
-## Running the app
+  - View job listings
+  - Apply for a job
 
-```bash
-# development
-$ npm run start
+- _Grafana Integration:_
+  - Monitoring and visualization of data regarding each job application.
 
-# watch mode
-$ npm run start:dev
+## Technologies Used
 
-# production mode
-$ npm run start:prod
-```
+- _Next.js:_ Framework for building server-side rendered React applications.
+- _NestJS:_ Framework for building scalable server-side applications.
+- _Prisma:_ Database toolkit and ORM.
+- _Grafana:_ Open-source platform for monitoring and observability.
+- _Validation and Security:_
+  - Class Validator
+  - Class Transformer
+- _Authentication:_
+  - Passport
+  - JWT
 
-## Test
+## Getting Started
 
-```bash
-# unit tests
-$ npm run test
+### Prerequisites
 
-# e2e tests
-$ npm run test:e2e
+- Node.js
+- npm or yarn
+- Docker (for Grafana)
 
-# test coverage
-$ npm run test:cov
-```
+### Installation
 
-## Support
+1. Clone the repository:
+   bash
+   git clone <repository-url>
+   cd job-application-backend
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+2. Install dependencies:
+   bash
+   npm install
 
-## Stay in touch
+   # or
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+   yarn install
 
-## License
+3. Set up the database:
+   bash
+   npx prisma migrate dev
 
-Nest is [MIT licensed](LICENSE).
+4. Start the application:
+   bash
+   npm run start:dev
+
+   # or
+
+   yarn start:dev
+
+5. Start Grafana:
+   bash
+   docker-compose up -d
+
+## API Endpoints
+
+### User Endpoints
+
+- _Get all jobs_
+  http
+  GET /jobs
+- _Get a job by ID_
+  http
+  GET /jobs/:id
+- _Submit a job application_
+  http
+  POST /jobs/:id/submit
+
+  Body:
+  json
+  {
+  "name": "John Doe",
+  "email": "john@example.com",
+  "resume": "link-to-resume"
+  }
+
+### Admin Endpoints
+
+- _Create a job_
+  http
+  POST /admin/jobs
+
+  Body:
+  json
+  {
+  "title": "Software Engineer",
+  "description": "Job description here",
+  "requirements": "Job requirements here"
+  }
+
+- _Get all jobs_
+  http
+  GET /admin/jobs
+- _Get a job by ID_
+  http
+  GET /admin/jobs/:id
+- _Update a job_
+  http
+  PATCH /admin/jobs/:id
+
+  Body:
+  json
+  {
+  "title": "Updated title",
+  "description": "Updated description",
+  "requirements": "Updated requirements"
+  }
+
+- _Delete a job_
+  http
+  DELETE /admin/jobs/:id
+
+### Application Endpoints
+
+- _Create an application_
+  http
+  POST /applications
+
+  Body:
+  json
+  {
+  "jobId": 1,
+  "applicantName": "John Doe",
+  "applicantEmail": "john@example.com",
+  "resume": "link-to-resume"
+  }
+
+- _Get all applications_
+  http
+  GET /applications
+- _Get an application by ID_
+  http
+  GET /applications/:id
+- _Update an application_
+  http
+  PATCH /applications/:id
+
+  Body:
+  json
+  {
+  "status": "Reviewed"
+  }
+
+- _Delete an application_
+  http
+  DELETE /applications/:id
+
+## Running Tests
+
+- _Run unit tests_
+  bash
+  npm run test
+
+  # or
+
+  yarn test
+
+- _Run end-to-end tests_
+  bash
+  npm run test:e2e
+
+  # or
+
+  yarn test:e2e
+
+- _Run tests in watch mode_
+  bash
+  npm run test:watch
+  # or
+  yarn test:watch
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (git checkout -b feature/AmazingFeature)
+3. Commit your changes (git commit -m 'Add some AmazingFeature')
+4. Push to the branch (git push origin feature/AmazingFeature)
+5. Open a Pull Request

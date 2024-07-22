@@ -65,18 +65,18 @@ describe('AdminJobsController', () => {
 
   describe('update', () => {
     it('should update a job', async () => {
-      const id = '1';
+      const id = 1;
       const updateJobDto: UpdateJobDto = {
         type: JobType.ONSITE,
       };
       await controller.update(id, updateJobDto);
-      expect(service.update).toHaveBeenCalledWith(+id, updateJobDto);
+      expect(service.update).toHaveBeenCalledWith(id, updateJobDto);
     });
   });
 
   describe('remove', () => {
     it('should remove a job', async () => {
-      const id = '1';
+      const id = 1;
       await controller.remove(id);
       expect(service.remove).toHaveBeenCalledWith(+id);
     });

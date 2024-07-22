@@ -5,9 +5,14 @@ import { SubmitApplicationDto } from './dto/submit-application.dto';
 @Injectable()
 export class UserJobsService {
   constructor(private readonly prisma: PrismaService) {}
-  findAll() {
+  findAll(userId: number) {
     return this.prisma.job.findMany({
       include: {
+        applications: {
+          where: {
+            userId,
+          },
+        },
         _count: {
           select: {
             applications: true,
@@ -17,8 +22,7 @@ export class UserJobsService {
     });
   }
 
-  findOne(id: number) {
-    // TODO: get user ID
+  findOne(userId: number, id: number) {
     return this.prisma.job.findUniqueOrThrow({
       where: { id },
       include: {
@@ -27,14 +31,12 @@ export class UserJobsService {
             applications: true,
           },
         },
+        applications: {
+          where: {
+            userId,
+          },
+        },
       },
-      // include: {
-      //   applications: {
-      //     where: {
-      //       userId: 0,
-      //     },
-      //   },
-      // },
     });
   }
 

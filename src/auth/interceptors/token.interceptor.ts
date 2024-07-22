@@ -4,11 +4,11 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import type { Response } from 'express';
+import { User } from '@prisma/client';
+import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../auth.service';
-import { User } from '@prisma/client';
 
 @Injectable()
 export class TokenInterceptor implements NestInterceptor {
