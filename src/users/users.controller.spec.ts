@@ -69,7 +69,7 @@ describe('UsersController', () => {
 
   describe('update', () => {
     it('should update a user by id', async () => {
-      const id = '1';
+      const id = 1;
       const updateUserDto: UpdateUserDto = {
         /* add necessary properties */
       };
@@ -81,7 +81,7 @@ describe('UsersController', () => {
 
   describe('remove', () => {
     it('should remove a user by id', async () => {
-      const id = '1';
+      const id = 1;
       const result = await controller.remove(id);
       expect(result).toEqual({});
       expect(service.remove).toHaveBeenCalledWith(+id);

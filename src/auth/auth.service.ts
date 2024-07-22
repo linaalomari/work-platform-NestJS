@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { hash } from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { UsersRepositoryService } from 'src/users-repository/users-repository.service';
 import { CreateUserDto } from '../users-repository/dto/create-user.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
@@ -17,15 +17,27 @@ export class AuthService {
     return this.usersRepositoryService.create(createUserDto);
   }
 
-  login() {
-    return `This action returns all auth`;
+  async login(user: User) {
+    const payload = { email: user.email, sub: user.id };
+    const accessToken = this.jwtService.sign(payload);
+    if (accessToken) {
+      const userData = await this.usersRepositoryService.findByEmail(
+        user.email,
+      );
+      return {
+        accessToken,
+        userData,
+      };
+    }
   }
 
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersRepositoryService.findByEmail(email);
-    const hashedPassword = await hash(password, 10);
-    if (user && user.hashedPassword === hashedPassword) {
-      const { hashedPassword, ...result } = user;
+    if (!user) {
+      return null;
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
+    if (isPasswordValid) {
       return user;
     }
     return null;
@@ -33,23 +45,17 @@ export class AuthService {
 
   signToken(user: User): string {
     const payload = {
-      sub: user.email,
+      sub: user.id,
     };
 
     return this.jwtService.sign(payload);
   }
 
   async verifyPayload(payload: JwtPayload): Promise<User> {
-    let user: User;
-
-    try {
-      user = await this.usersRepositoryService.findById(payload.id);
-    } catch (error) {
-      throw new UnauthorizedException(
-        `There isn't any user with email: ${payload.id}`,
-      );
+    const user = await this.usersRepositoryService.findById(payload.sub);
+    if (!user) {
+      throw new UnauthorizedException();
     }
-
     return user;
   }
 }

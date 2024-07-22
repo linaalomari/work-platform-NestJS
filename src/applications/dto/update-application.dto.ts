@@ -1,4 +1,8 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateApplicationDto } from './create-application.dto';
+import { ApplicationStatus } from '@prisma/client';
+import { IsIn, IsString } from 'class-validator';
 
-export class UpdateApplicationDto extends PartialType(CreateApplicationDto) {}
+export class UpdateApplicationStatusDto {
+  @IsIn(Object.values(ApplicationStatus))
+  @IsString()
+  status: ApplicationStatus;
+}

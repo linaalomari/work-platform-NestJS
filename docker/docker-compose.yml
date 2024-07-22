@@ -20,11 +20,10 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - 'grafana_storage:/var/lib/grafana'
+      - './grafana/data:/var/lib/grafana'
     depends_on:
       -  mysql
 
 volumes:
   mysql_data:
   grafana_storage: {}
-

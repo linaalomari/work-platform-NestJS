@@ -5,29 +5,38 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { GetUserId } from 'src/auth/decorators/user.decorator';
+import JwtAuthenticationGuard from 'src/auth/guards/jwt.guard';
 import { SubmitApplicationDto } from './dto/submit-application.dto';
 import { UserJobsService } from './user-jobs.service';
 
+@UseGuards(JwtAuthenticationGuard)
 @Controller('jobs')
 export class UserJobsController {
   constructor(private readonly userJobsService: UserJobsService) {}
 
   @Get()
-  findAll() {
-    return this.userJobsService.findAll();
+  findAll(@GetUserId() userId: number) {
+    return this.userJobsService.findAll(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.userJobsService.findOne(id);
+  findOne(@GetUserId() userId: number, @Param('id', ParseIntPipe) id: number) {
+    return this.userJobsService.findOne(userId, id);
   }
 
   @Post(':id/submit')
   submitJobApplication(
-    @Param('id', ParseIntPipe) id: number,
+    @GetUserId() userId: number,
+    @Param('id', ParseIntPipe) jobId: number,
     @Body() submitApplicationDto: SubmitApplicationDto,
   ) {
-    return this.userJobsService.submitApplication(1, id, submitApplicationDto);
+    return this.userJobsService.submitApplication(
+      userId,
+      jobId,
+      submitApplicationDto,
+    );
   }
 }
